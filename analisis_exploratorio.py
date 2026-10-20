@@ -2,6 +2,17 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
+# Rutas Relativas (configurar)
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "datos"
+TABLAS_DIR = BASE_DIR / "resultados" / "tablas"
+FIGURAS_DIR = BASE_DIR / "resultados" / "figuras"
+
+# 2. Creación de Directorios
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+TABLAS_DIR.mkdir(parents=True, exist_ok=True)
+FIGURAS_DIR.mkdir(parents=True, exist_ok=True)
+
 def configurar_entorno(semilla=42):
     np.random.seed(semilla)
     ruta_raiz = Path(__file__).resolve().parent
@@ -23,3 +34,10 @@ def cargar_y_validar_datos(ruta_archivo, umbral_filas=50000):
         
     print("Dataset validado con éxito.")
     return df
+
+def main():
+    print("Entorno configurado correctamente. Directorios listos.")
+    # Integrar las funciones aquí
+
+if __name__ == "__main__":
+    main()

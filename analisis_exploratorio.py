@@ -29,3 +29,42 @@ def configurar_entorno(semilla: int = 42) -> Path:
     print(f"[CONFIG] Directorio raíz configurado en: {ruta_raiz}")
     print("[CONFIG] Carpetas 'resultados/tablas/' y 'resultados/figuras/' verificadas.")
     return ruta_raiz
+
+# =============================================================================
+# MÓDULO 2: CARGA, LECTURA ROBUSTA Y VALIDACIÓN DE VOLUMEN
+# =============================================================================
+def cargar_y_validar_datos(ruta_archivo: Path, umbral_filas: int = 50000) -> pd.DataFrame:
+    """
+    Primero, abre el archivo CSV y confirma que el archivo exista en el disco.
+    Después, revisa que esté en UTF-8, verifica el tamaño de las columnas y asegúrarse
+    de que tenga todas las filas necesarias
+    """
+    if not ruta_archivo.is_file():
+        raise FileNotFoundError(
+            f"Error crítico: No se encontró el dataset en la ruta:\n{ruta_archivo}\n"
+            "Asegúrese de colocar el archivo .csv en la carpeta 'datos/' o en la raíz del proyecto."
+        )
+
+    print(f"\n[CARGA] Iniciando lectura de '{ruta_archivo.name}'...")
+
+    try:
+        # Lectura con codificación UTF-8 explícita
+        df = pd.read_csv(ruta_archivo, encoding="utf-8")
+        print("[CARGA] El archivo fue leído exitosamente con codificación UTF-8.")
+    except UnicodeDecodeError:
+        print("[AVISO] Falló UTF-8 estándar. Intentando decodificación alternativa (latin1)...")
+        df = pd.read_csv(ruta_archivo, encoding="latin1")
+        print("[CARGA] Archivo leído con codificación latin1.")
+
+    filas, columnas = df.shape
+    print(f"[INSPECCIÓN] Filas iniciales: {filas:,} | Columnas detectadas: {columnas}")
+
+    # Validación mínimo 50.000 filas
+    if filas < umbral_filas:
+        raise ValueError(
+            f"Incumplimiento de datos: El dataset contiene {filas:,} filas, "
+            f"pero se exige un mínimo de {umbral_filas:,} registros."
+        )
+
+    print(f"[VALIDACIÓN OK] Cumple con el criterio de volumen (≥ {umbral_filas:,} filas sin contar encabezado).")
+    return df

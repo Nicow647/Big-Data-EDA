@@ -5,8 +5,8 @@ para realizar un Análisis Exploratorio de Datos (EDA) sobre
 el historial de terremotos en Chile (1976-2021).
 
 # Requisitos Previos
-- **Python:** Versión 3.11.
-- **Entorno Virtual:** Virtualenv (venv).
+- **Python:** Versión 3.11
+- **Entorno Virtual:** Virtualenv (venv)
 
 # Instalación y Configuración
 1. **Clonar repositorio:**
@@ -14,7 +14,7 @@ el historial de terremotos en Chile (1976-2021).
 
 2. **Crear y activar el entorno virtual:**
    * Para Windows (Recomiendo usar la terminal CMD; Powershell me daba algunos errores):
-      - py -3.11 -m venv venv_eda // Crear entorno virtual
+      - python3.11 -m venv venv_eda // Crear entorno virtual
       - venv_eda\Scripts\activate // Activar entorno
    * Para Linux/macOs: 
       - python3.11 -m venv venv_eda // Crear entorno virtual

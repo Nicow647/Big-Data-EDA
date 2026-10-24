@@ -1,6 +1,7 @@
 from pathlib import Path
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Rutas Relativas (configurar)
 BASE_DIR = Path(__file__).resolve().parent
@@ -50,12 +51,31 @@ def cargar_y_validar_datos(ruta_archivo, umbral_filas=50000):
     return df
 
 
+def generar_graficos(df):
+    print("Generando graficos...")
+
+    print("Grafico 1 (Distribuición de Magnitudes)\n")
+    df["magnitude"].hist()
+    plt.title("Distribuición de Magnitudes Sísmicas (1976-2021)")
+    plt.xlabel("Magnitud (Mw)")
+    plt.ylabel("Frecuencia")
+    plt.show()
+
+    print("Grafico 2 (Relación de profundidad y energía liberada (momento sismico))\n")
+    plt.scatter(df["depth"], df["moment"])
+    plt.title("Relación profundidad vs momento sísmico")
+    plt.xlabel("Profunidad (km)")
+    plt.ylabel("Momento Sísmico (dyn*cm)")
+    plt.show()
+
+
 def main():
     configurar_entorno()
     print("Entorno configurado correctamente. Directorios listos.")
 
     df = cargar_y_validar_datos(DATA_DIR / "Chile Earthquake Dataset (1976-2021).csv")
     # Integrar las funciones aquí
+    generar_graficos(df)
 
 
 if __name__ == "__main__":

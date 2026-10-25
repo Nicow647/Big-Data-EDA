@@ -167,6 +167,9 @@ def estadistica_descriptiva(df):
     if not cols_evaluar:
         raise ValueError("No se encontraron las columnas numéricas esperadas.")
 
+    # Asegurar existencia de carpeta antes de guardar cualquier tabla
+    TABLAS_DIR.mkdir(parents=True, exist_ok=True)
+
     # Estadísticas descriptivas univariadas
     desc = df[cols_evaluar].describe(
         percentiles=[0.25, 0.5, 0.75]
@@ -208,7 +211,6 @@ def estadistica_descriptiva(df):
     )
 
     # Exportación
-    TABLAS_DIR.mkdir(parents=True, exist_ok=True)
     desc.to_csv(TABLAS_DIR / "descriptiva_general.csv")
     corr_export.to_csv(TABLAS_DIR / "correlaciones.csv")
 

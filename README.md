@@ -1,5 +1,15 @@
 # Laboratorio 04: Análisis Exploratorio de Datos (EDA) - Terremotos en Chile
 
+# Integrantes (Equipo 6)
+- Nicolás Venegas Gaona (Nicow647)
+- Kamila Castillo Montes (kamila-castillo-montes)
+- Matías Becerra Araneda (matiasbenja7)
+- Matías Catalán Moreno (mcbm-uni)
+- Matías Palma Sepúlveda (Garluix)
+- Rúbén Gorigoitía Barraza (Rub3n-Gori)
+
+
+
 Este proyecto contiene un pipeline automatizado en Python
 para realizar un Análisis Exploratorio de Datos (EDA) sobre
 el historial de terremotos en Chile (1976-2021).

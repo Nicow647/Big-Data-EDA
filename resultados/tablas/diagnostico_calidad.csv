@@ -1,0 +1,28 @@
+﻿tipo_registro,columna,tipo_dato,total_registros,valores_nulos,porcentaje_nulos,valores_unicos,duplicados_exactos_fila,observacion
+columna,date,str,59672,0,0.0,15075,,
+columna,time,str,59672,0,0.0,59279,,
+columna,event name,str,59672,0,0.0,59672,,
+columna,latitude,float64,59672,0,0.0,12273,,
+columna,longitude,float64,59672,0,0.0,20800,,
+columna,depth,float64,59672,0,0.0,4141,,
+columna,Mrr,float64,59672,0,0.0,16367,,
+columna,Mtt,float64,59672,0,0.0,14993,,
+columna,Mpp,float64,59672,0,0.0,16145,,
+columna,Mrt,float64,59672,0,0.0,14080,,
+columna,Mrp,float64,59672,0,0.0,15060,,
+columna,Mtp,float64,59672,0,0.0,15130,,
+columna,MrrError,float64,59672,0,0.0,1893,,
+columna,MttError,float64,59672,0,0.0,2240,,
+columna,MppError,float64,59672,0,0.0,2423,,
+columna,MrtError,float64,59672,0,0.0,3725,,
+columna,MrpError,float64,59672,0,0.0,3813,,
+columna,MtpError,float64,59672,0,0.0,2058,,
+columna,half duration,float64,59672,0,0.0,242,,
+columna,moment,float64,59672,0,0.0,18739,,
+columna,magnitude,float64,59672,0,0.0,367,,
+columna,exponent,int64,59672,0,0.0,8,,
+resumen,__dataset__,,59672,0,0.0,,0,Duplicados exactos de filas en el dataset
+validacion,date,str,59672,0,0.0,15075,,Fechas inválidas (formato YYYY-MM-DD): 0
+validacion,time,str,59672,0,0.0,59279,,Horas inválidas (formato HH:MM:SS): 0
+validacion,event name,str,59672,0,0.0,59672,,Filas cuyo identificador de evento está repetido: 0
+resumen,__numericas__,,59672,,,,,Valores infinitos en columnas numéricas: 0

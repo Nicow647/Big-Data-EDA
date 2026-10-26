@@ -10,10 +10,12 @@ TABLAS_DIR = BASE_DIR / "resultados" / "tablas"
 FIGURAS_DIR = BASE_DIR / "resultados" / "figuras"
 ARCHIVO_CSV = DATA_DIR / "Chile Earthquake Dataset (1976-2021).csv"
 
+
 def configurar_entorno():
     # Creación de carpetas de resultados
     TABLAS_DIR.mkdir(parents=True, exist_ok=True)
     FIGURAS_DIR.mkdir(parents=True, exist_ok=True)
+
 
 def diagnostico_calidad(df):
     # Calcula indicadores de calidad y los devuelve en una tabla
@@ -21,17 +23,27 @@ def diagnostico_calidad(df):
 
     def agregar_resultado(tipo, columna, observacion=""):
         serie = df[columna] if columna in df.columns else None
-        resultados.append({
-            "tipo_registro": tipo,
-            "columna": columna,
-            "tipo_dato": str(serie.dtype) if serie is not None else "",
-            "total_registros": len(df),
-            "valores_nulos": int(serie.isna().sum()) if serie is not None else pd.NA,
-            "porcentaje_nulos": round(float(serie.isna().mean() * 100), 4) if serie is not None else pd.NA,
-            "valores_unicos": int(serie.nunique(dropna=True)) if serie is not None else pd.NA,
-            "duplicados_exactos_fila": pd.NA,
-            "observacion": observacion,
-        })
+        resultados.append(
+            {
+                "tipo_registro": tipo,
+                "columna": columna,
+                "tipo_dato": str(serie.dtype) if serie is not None else "",
+                "total_registros": len(df),
+                "valores_nulos": (
+                    int(serie.isna().sum()) if serie is not None else pd.NA
+                ),
+                "porcentaje_nulos": (
+                    round(float(serie.isna().mean() * 100), 4)
+                    if serie is not None
+                    else pd.NA
+                ),
+                "valores_unicos": (
+                    int(serie.nunique(dropna=True)) if serie is not None else pd.NA
+                ),
+                "duplicados_exactos_fila": pd.NA,
+                "observacion": observacion,
+            }
+        )
 
     # Diagnóstico individual de cada columna
     for columna in df.columns:
@@ -44,11 +56,13 @@ def diagnostico_calidad(df):
     duplicados_exactos = int(df.duplicated().sum())
 
     agregar_resultado("resumen", "__dataset__", "Duplicados exactos de filas")
-    resultados[-1].update({
-        "valores_nulos": total_nulos,
-        "porcentaje_nulos": round(porcentaje_nulos, 4),
-        "duplicados_exactos_fila": duplicados_exactos,
-    })
+    resultados[-1].update(
+        {
+            "valores_nulos": total_nulos,
+            "porcentaje_nulos": round(porcentaje_nulos, 4),
+            "duplicados_exactos_fila": duplicados_exactos,
+        }
+    )
 
     # Validaciones de fechas, horas e identificadores
     for columna in ("date", "time", "event name"):
@@ -73,9 +87,24 @@ def diagnostico_calidad(df):
 
     # Detectar valores infinitos en columnas numéricas
     columnas_numericas = (
-        "latitude", "longitude", "depth", "Mrr", "Mtt", "Mpp", "Mrt",
-        "Mrp", "Mtp", "MrrError", "MttError", "MppError", "MrtError",
-        "MrpError", "MtpError", "half duration", "moment", "magnitude",
+        "latitude",
+        "longitude",
+        "depth",
+        "Mrr",
+        "Mtt",
+        "Mpp",
+        "Mrt",
+        "Mrp",
+        "Mtp",
+        "MrrError",
+        "MttError",
+        "MppError",
+        "MrtError",
+        "MrpError",
+        "MtpError",
+        "half duration",
+        "moment",
+        "magnitude",
         "exponent",
     )
 
@@ -114,9 +143,7 @@ def diagnostico_calidad(df):
         if maximo is not None:
             fuera_de_rango |= valores > maximo
         cantidad = int((fuera_de_rango & valores.notna()).sum())
-        limite = (
-            f"[{minimo}, {maximo}]" if maximo is not None else f">= {minimo}"
-        )
+        limite = f"[{minimo}, {maximo}]" if maximo is not None else f">= {minimo}"
         detalle = f"Valores fuera del rango de revisión {limite}: {cantidad}"
         agregar_resultado("validacion", columna, detalle)
 
@@ -126,6 +153,7 @@ def diagnostico_calidad(df):
         f"Valores infinitos en columnas numéricas: {infinitos}",
     )
     return pd.DataFrame(resultados)
+
 
 def validar_y_preparar_datos(df: pd.DataFrame, umbral_filas=50000):
     # Valida y prepara los datos cargados
@@ -159,6 +187,7 @@ def validar_y_preparar_datos(df: pd.DataFrame, umbral_filas=50000):
     print("Dataset validado con éxito.")
     return df
 
+
 def estadistica_descriptiva(df):
     # Genera estadísticas descriptivas y matrices de correlación
     num_cols = ["magnitude", "depth", "moment", "half duration"]
@@ -171,22 +200,24 @@ def estadistica_descriptiva(df):
     TABLAS_DIR.mkdir(parents=True, exist_ok=True)
 
     # Estadísticas descriptivas univariadas
-    desc = df[cols_evaluar].describe(
-        percentiles=[0.25, 0.5, 0.75]
-    ).T
+    desc = df[cols_evaluar].describe(percentiles=[0.25, 0.5, 0.75]).T
 
-    desc = desc.rename(columns={
-        "50%": "mediana",
-        "25%": "Q1",
-        "75%": "Q3",
-        "std": "desv_std"
-    })
+    desc = desc.rename(
+        columns={"50%": "mediana", "25%": "Q1", "75%": "Q3", "std": "desv_std"}
+    )
 
     desc["IQR"] = desc["Q3"] - desc["Q1"]
 
     columnas_orden = [
-        "count", "mean", "mediana", "desv_std",
-        "min", "Q1", "Q3", "max", "IQR"
+        "count",
+        "mean",
+        "mediana",
+        "desv_std",
+        "min",
+        "Q1",
+        "Q3",
+        "max",
+        "IQR",
     ]
     desc = desc[[c for c in columnas_orden if c in desc.columns]]
 
@@ -198,17 +229,16 @@ def estadistica_descriptiva(df):
 
     # Comparación por grupos
     if "depth_category" in df.columns:
-        grupo_stats = df.groupby("depth_category", observed=False)[cols_evaluar].agg(["count", "mean", "median", "std"])
+        grupo_stats = df.groupby("depth_category", observed=False)[cols_evaluar].agg(
+            ["count", "mean", "median", "std"]
+        )
         grupo_stats.to_csv(TABLAS_DIR / "descriptiva_grupos.csv")
 
     corr_pearson = df[cols_evaluar].corr(method="pearson")
     corr_spearman = df[cols_evaluar].corr(method="spearman")
 
     # Matrices de correlación (Pearson y Spearman)
-    corr_export = pd.concat(
-        [corr_pearson, corr_spearman],
-        keys=["Pearson", "Spearman"]
-    )
+    corr_export = pd.concat([corr_pearson, corr_spearman], keys=["Pearson", "Spearman"])
 
     # Exportación
     desc.to_csv(TABLAS_DIR / "descriptiva_general.csv")
@@ -217,32 +247,65 @@ def estadistica_descriptiva(df):
     print("Estadísticas y correlaciones exportadas con éxito.")
     return df
 
+
 def generar_graficos(df):
     print("Generando gráficos...")
 
     print("Gráfico 1 (Distribuición de Magnitudes)\n")
-    plt.figure(figsize=(10, 6))
     df["magnitude"].hist()
     plt.title("Distribución de Magnitudes Sísmicas (1976-2021)")
     plt.xlabel("Magnitud (Mw)")
     plt.ylabel("Frecuencia")
-    plt.tight_layout()
-    plt.savefig(FIGURAS_DIR / "distribucion_magnitudes.png", dpi=300)
+    plt.savefig(FIGURAS_DIR / "01_distribucion_magnitudes.png", dpi=300)
     plt.show()
     plt.close()
 
     print("Gráfico 2 (Relación de profundidad y energía liberada (momento sismico))\n")
-    plt.figure(figsize=(10, 6))
-    plt.scatter(df["depth"], df["moment"], alpha=0.6)
+    plt.scatter(df["depth"], df["moment"])
     plt.title("Relación profundidad vs momento sísmico")
     plt.xlabel("Profundidad (km)")
     plt.ylabel("Momento Sísmico (dyn*cm)")
-    plt.tight_layout()
-    plt.savefig(FIGURAS_DIR / "profundidad_vs_momento.png", dpi=300)
+    plt.savefig(FIGURAS_DIR / "02_profundidad_vs_momento.png", dpi=300)
+    plt.show()
+    plt.close()
+
+    print("Gráfico 3 (Comparación de magnitudes por profundidad)\n")
+    df.boxplot(column="magnitude", by="depth_category")
+    plt.title("Distribución de magnitudes por profunidad")
+    plt.suptitle("")
+    plt.xlabel("Categoría de Profunidad")
+    plt.ylabel("Magnitud (Mw)")
+    plt.savefig(FIGURAS_DIR / "03_magnitud_vs_profundidad.png", dpi=300)
+    plt.show()
+    plt.close()
+
+    print("Gráfico 4 (Evolución anual de sismos extremos)\n")
+    plt.figure()
+    sismos_fuertes = df[df["magnitude"] >= 6.0]
+    conteo_anual = sismos_fuertes.groupby(sismos_fuertes["datetime"].dt.year).size()
+    plt.plot(conteo_anual.index, conteo_anual.values)
+    plt.title("Evolución anual de sismos extremos (Mw >= 6.0)")
+    plt.xlabel("Año")
+    plt.ylabel("Cantidad de Sismos")
+    plt.savefig(FIGURAS_DIR / "04_evolucion_anual.png", dpi=300)
+    plt.show()
+    plt.close()
+
+    print("Gráfico 5 (Magnitud de sismos extremos por año)\n")
+    plt.figure()
+    sismos_fuertes = df[df["magnitude"] >= 6.0]
+    anios = sismos_fuertes["datetime"].dt.year
+    magnitudes = sismos_fuertes["magnitude"]
+    plt.scatter(anios, magnitudes)
+    plt.title("Magnitud de sismos extremos por año (Mw >= 6.0)")
+    plt.xlabel("Año")
+    plt.ylabel("Magnitud (Mw)")
+    plt.savefig(FIGURAS_DIR / "05_magnitud_por_anio.png", dpi=300)
     plt.show()
     plt.close()
 
     print("Gráficos generados correctamente.")
+
 
 def main():
     configurar_entorno()
@@ -270,6 +333,7 @@ def main():
     # Generación de gráficos
     print("\n--- Análisis exploratorio ---")
     generar_graficos(df)
+
 
 if __name__ == "__main__":
     main()
